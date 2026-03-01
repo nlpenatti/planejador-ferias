@@ -46,25 +46,25 @@ export function SidebarPlanejador({
     <aside className="flex flex-col gap-6">
       {/* Card Configuração */}
       <div className={`rounded-2xl border p-5 ${c.card}`}>
-        <h2 className={`text-[11px] font-semibold uppercase tracking-widest mb-4 ${c.tituloCard}`}>
+        <h2 className={`text-xs sm:text-[11px] font-semibold uppercase tracking-widest mb-4 ${c.tituloCard}`}>
           Configuração
         </h2>
         <div className="space-y-5">
           <div>
-            <span id="label-seletor-ano" className={`block text-[11px] font-medium mb-2 ${c.label}`}>
+            <span id="label-seletor-ano" className={`block text-xs sm:text-[11px] font-medium mb-2 ${c.label}`}>
               Ano
             </span>
             <div
               role="group"
               aria-labelledby="label-seletor-ano"
-              className={`inline-flex rounded-xl border p-1 ${c.grupoBotoes}`}
+              className={`inline-flex flex-wrap gap-1.5 rounded-xl border p-1 ${c.grupoBotoes}`}
             >
               {ANOS_DISPONIVEIS.map((a) => (
                 <button
                   key={a}
                   type="button"
                   onClick={() => setAno(a)}
-                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                  className={`min-h-[44px] sm:min-h-0 rounded-lg px-4 py-3 sm:py-2 text-base sm:text-sm font-medium transition-colors ${
                     ano === a
                       ? isLight
                         ? 'bg-emerald-500/20 text-emerald-600 shadow-sm'
@@ -79,14 +79,14 @@ export function SidebarPlanejador({
           </div>
           <div>
             <div className="flex items-center justify-between gap-2 mb-2">
-              <span id="label-seletor-dias" className={`text-[11px] font-medium ${c.label}`}>
+              <span id="label-seletor-dias" className={`text-xs sm:text-[11px] font-medium ${c.label}`}>
                 Dias de férias (CLT)
               </span>
               {temSelecao && (
                 <button
                   type="button"
                   onClick={limparSelecao}
-                  className={`text-[10px] font-medium transition-colors ${c.botaoSecundario}`}
+                  className={`min-h-[44px] sm:min-h-0 text-xs sm:text-[10px] font-medium transition-colors py-2 ${c.botaoSecundario}`}
                 >
                   Limpar seleção
                 </button>
@@ -110,10 +110,10 @@ export function SidebarPlanejador({
       {/* Card Combine com feriados */}
       <div className={`rounded-2xl border overflow-hidden flex flex-col min-h-0 ${c.card}`}>
         <div className={`p-4 border-b ${c.cardBorda}`}>
-          <h2 className={`text-[11px] font-semibold uppercase tracking-widest ${c.tituloCard}`}>
+          <h2 className={`text-xs sm:text-[11px] font-semibold uppercase tracking-widest ${c.tituloCard}`}>
             Combine com feriados
           </h2>
-          <p className={`text-[13px] mt-1 ${c.label}`}>
+          <p className={`text-sm sm:text-[13px] mt-1 ${c.label}`}>
             Melhores períodos para <span className="font-semibold text-emerald-500">{diasEfetivos} dias</span>
           </p>
         </div>

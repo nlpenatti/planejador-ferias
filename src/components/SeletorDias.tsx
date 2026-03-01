@@ -22,7 +22,7 @@ export function SeletorDias({ dias, customizado, onChange }: SeletorDiasProps) {
             key={n}
             type="button"
             onClick={() => onChange(n, null)}
-            className={`min-w-[2.25rem] rounded-lg px-2.5 py-2 text-sm font-medium transition-colors ${
+            className={`min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-[2.25rem] rounded-lg px-2.5 py-3 sm:py-2 text-base sm:text-sm font-medium transition-colors ${
               !ehCustom && dias === n
                 ? isLight
                   ? 'bg-emerald-500/20 text-emerald-600'
@@ -35,7 +35,7 @@ export function SeletorDias({ dias, customizado, onChange }: SeletorDiasProps) {
         ))}
       </div>
       <div className="flex items-center gap-2">
-        <span className={`text-[10px] font-medium uppercase tracking-wider ${c.textoMuted}`}>ou</span>
+        <span className={`text-xs sm:text-[10px] font-medium uppercase tracking-wider ${c.textoMuted}`}>ou</span>
         <input
           id="dias-ferias-customizado"
           name="dias-ferias"
@@ -49,9 +49,9 @@ export function SeletorDias({ dias, customizado, onChange }: SeletorDiasProps) {
             if (v !== null && v >= 1 && v <= 30) onChange(v, v)
             else if (e.target.value === '') onChange(DIAS_FERIAS_INICIAL, null)
           }}
-          className={`w-24 rounded-lg border px-3 py-2.5 text-center text-sm font-medium focus:border-emerald-500/40 focus:outline-none ${c.input}`}
+          className={`w-28 sm:w-24 min-h-[44px] sm:min-h-0 rounded-lg border px-3 py-3 sm:py-2.5 text-center text-sm font-medium focus:border-emerald-500/40 focus:outline-none ${c.input}`}
         />
-        <span className={`text-[10px] font-medium ${c.textoMuted}`}>dias</span>
+        <span className={`text-xs sm:text-[10px] font-medium ${c.textoMuted}`}>dias</span>
       </div>
     </div>
   )

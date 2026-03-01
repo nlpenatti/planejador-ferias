@@ -53,11 +53,11 @@ export function CalendarioAnual({
   return (
     <div className={`w-full transition-opacity duration-200 ${ehPreview ? 'opacity-90' : 'opacity-100'}`}>
       {ehPreview && (
-        <p className={`text-[9px] font-medium uppercase tracking-widest mb-2 ${c.tituloCard}`}>
+        <p className={`hidden sm:block text-[9px] font-medium uppercase tracking-widest mb-2 ${c.tituloCard}`}>
           Pré-visualização ao passar o mouse
         </p>
       )}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5">
         {MESES.map((nomeMes, indiceMes) => {
           if (indiceMes < mesAtual) return null
 
@@ -87,9 +87,9 @@ export function CalendarioAnual({
             <div key={indiceMes} className="flex flex-col gap-2.5">
               <div className={`font-semibold text-sm tracking-tight ${c.calendarioMes}`}>{nomeMes}</div>
               
-              <div className="grid grid-cols-7 gap-y-1.5 text-center">
+              <div className="grid grid-cols-7 gap-y-1.5 sm:gap-y-1.5 text-center">
                 {letrasDias.map((letra, idx) => (
-                  <div key={idx} className={`text-[10px] font-medium uppercase ${c.calendarioDiaSemana}`}>
+                  <div key={idx} className={`text-xs sm:text-[10px] font-medium uppercase ${c.calendarioDiaSemana}`}>
                     {letra}
                   </div>
                 ))}
@@ -103,13 +103,13 @@ export function CalendarioAnual({
                   
                   if (foraDoMes) {
                     return (
-                      <div key={i} className={`h-6 w-6 mx-auto flex items-center justify-center text-[9px] ${c.calendarioForaMes}`}>
+                      <div key={i} className={`h-9 w-9 min-h-[36px] min-w-[36px] sm:h-6 sm:w-6 mx-auto flex items-center justify-center text-xs sm:text-[9px] ${c.calendarioForaMes}`}>
                         {data.getDate()}
                       </div>
                     )
                   }
 
-                  let classes = "relative flex h-6 w-6 mx-auto items-center justify-center rounded-full text-[9px] transition-all "
+                  let classes = "relative flex h-9 w-9 min-h-[36px] min-w-[36px] sm:h-6 sm:w-6 mx-auto items-center justify-center rounded-full text-xs sm:text-[9px] transition-all "
                   
                   if (ehAgendado) {
                     classes += "bg-emerald-500 text-white font-bold shadow-[0_0_8px_rgba(16,185,129,0.4)]"
@@ -139,7 +139,7 @@ export function CalendarioAnual({
               {feriadosDoMes.length > 0 && (
                 <div className="space-y-1 mt-1">
                   {feriadosDoMes.map((f) => (
-                    <div key={f.date} className="flex gap-2 text-[10px] items-start leading-tight">
+                    <div key={f.date} className="flex gap-2 text-xs sm:text-[10px] items-start leading-tight">
                       <span className="font-semibold text-amber-600 shrink-0">{f.date.split('-')[2]}</span>
                       <span className={c.calendarioFeriadoLista} title={f.name}>{f.name}</span>
                     </div>
