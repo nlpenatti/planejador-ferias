@@ -1,12 +1,10 @@
 import { useTema } from '@/contexts/ThemeContext'
-import { classesTema } from '@/utils/classesTema'
 
 const MESES_SKELETON = 8
 
 export function CalendarioSkeleton() {
   const { tema } = useTema()
   const isLight = tema === 'light'
-  const c = classesTema(isLight)
   const skeletonBg = isLight ? 'bg-slate-200' : 'bg-slate-700/50'
 
   return (
