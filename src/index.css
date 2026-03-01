@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-[#0a0a0f] text-slate-100 antialiased;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+/* Scroll personalizado (Combine com feriados) */
+.scroll-combine::-webkit-scrollbar {
+  width: 6px;
+}
+.scroll-combine::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 3px;
+}
+.scroll-combine::-webkit-scrollbar-thumb {
+  background: rgba(51, 65, 85, 0.8);
+  border-radius: 3px;
+}
+.scroll-combine::-webkit-scrollbar-thumb:hover {
+  background: rgba(71, 85, 105, 0.9);
+}
+.scroll-combine {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(51, 65, 85, 0.8) rgba(15, 23, 42, 0.5);
+}
+
+/* Tema claro: scroll mais claro */
+[data-tema="light"] .scroll-combine::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.8);
+  border-radius: 3px;
+}
+[data-tema="light"] .scroll-combine::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.7);
+  border-radius: 3px;
+}
+[data-tema="light"] .scroll-combine::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.9);
+}
+[data-tema="light"] .scroll-combine {
+  scrollbar-color: rgba(148, 163, 184, 0.7) rgba(226, 232, 240, 0.8);
+}
