@@ -1,6 +1,10 @@
+/// <reference types="node" />
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import { writeFileSync } from 'fs'
+
+const versao = process.env.VERCEL_GIT_COMMIT_SHA || process.env.GIT_SHA || 'dev'
 
 const headersSeguranca = {
   'X-Frame-Options': 'DENY',
@@ -9,7 +13,20 @@ const headersSeguranca = {
 }
 
 export default defineConfig({
-  plugins: [react()],
+  define: { __APP_VERSION__: JSON.stringify(versao) },
+  // Workaround: conflito de tipos entre Vite 6 (projeto) e Vite 5 (vitest/node_modules)
+  plugins: [
+    react(),
+    {
+      name: 'version-json',
+      closeBundle() {
+        writeFileSync(
+          path.resolve(__dirname, 'dist/version.json'),
+          JSON.stringify({ version: versao })
+        )
+      },
+    },
+  ] as any,
   server: { headers: headersSeguranca },
   preview: { headers: headersSeguranca },
   resolve: {
