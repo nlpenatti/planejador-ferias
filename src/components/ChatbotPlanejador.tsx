@@ -71,7 +71,6 @@ export function ChatbotPlanejador({
   feriados: _feriados,
   onVerCalendario,
 }: ChatbotPlanejadorProps) {
-  const diasASolicitar = diasCustomizado ?? diasDeFerias
   const { tema } = useTema()
   const isLight = tema === 'light'
   const c = classesTema(isLight)
