@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 import { CalendarioAnual } from '@/components/CalendarioAnual'
 import { CalendarioSkeleton } from '@/components/CalendarioSkeleton'
 import { SidebarPlanejador } from '@/components/SidebarPlanejador'
+import { ChatbotFab } from '@/components/ChatbotFab'
+import { ChatbotPlanejador } from '@/components/ChatbotPlanejador'
 import { usePlanejadorFerias } from '@/hooks/usePlanejadorFerias'
 import { useTema } from '@/contexts/ThemeContext'
 import { classesTema } from '@/utils/classesTema'
@@ -10,10 +12,12 @@ const LIMIAR_FECHAR_ARRASTO_PX = 120
 
 export function PlanejadorFerias() {
   const [sidebarAberta, setSidebarAberta] = useState(false)
+  const [chatAberto, setChatAberto] = useState(false)
   const [arrastoY, setArrastoY] = useState(0)
   const [sheetVisivel, setSheetVisivel] = useState(false)
   const [arrastando, setArrastando] = useState(false)
   const touchInicio = useRef<{ y: number; arrastoInicial: number } | null>(null)
+  const calendarioSectionRef = useRef<HTMLElement>(null)
   const { tema, alternarTema } = useTema()
 
   useEffect(() => {
@@ -202,11 +206,11 @@ export function PlanejadorFerias() {
                     type="button"
                     onClick={fecharSheet}
                     aria-label="Fechar configuração"
-                    className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl font-medium transition-colors ${
-                      isLight ? 'bg-slate-200 hover:bg-slate-300' : 'bg-slate-800/80 hover:bg-slate-700/80'
+                    className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl font-medium text-3xl transition-colors ${
+                      isLight ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-slate-100'
                     }`}
                   >
-                    Fechar
+                    ×
                   </button>
                 </div>
                 <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
@@ -237,7 +241,7 @@ export function PlanejadorFerias() {
           )}
 
           {/* Área Principal (Calendário) */}
-          <section className="flex flex-col gap-4">
+          <section ref={calendarioSectionRef} className="flex flex-col gap-4">
             {(oportunidade || oportunidadeHover) && (
               <div className={`flex flex-wrap gap-3 px-3 py-2 border rounded-lg ${c.legenda}`}>
                 <div className="flex items-center gap-1.5">
@@ -307,6 +311,30 @@ export function PlanejadorFerias() {
           </footer>
         </div>
       </div>
+
+      <ChatbotFab
+        aberto={chatAberto}
+        onAbrir={() => setChatAberto(true)}
+        onFechar={() => setChatAberto(false)}
+      >
+        <ChatbotPlanejador
+          ano={ano}
+          setAno={setAno}
+          diasDeFerias={diasDeFerias}
+          setDiasDeFerias={setDiasDeFerias}
+          diasCustomizado={diasCustomizado}
+          setDiasCustomizado={setDiasCustomizado}
+          oportunidades={oportunidades}
+          setOportunidadeSelecionada={setOportunidadeSelecionada}
+          feriados={feriados}
+          onVerCalendario={() => {
+            setChatAberto(false)
+            requestAnimationFrame(() => {
+              calendarioSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            })
+          }}
+        />
+      </ChatbotFab>
     </div>
   )
 }
