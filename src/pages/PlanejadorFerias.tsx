@@ -36,9 +36,9 @@ export function PlanejadorFerias() {
 
   return (
     <div
-      className={`min-h-screen font-sans selection:bg-emerald-500/20 antialiased px-6 py-6 transition-colors ${c.pagina}`}
+      className={`min-h-screen font-sans selection:bg-emerald-500/20 antialiased px-4 py-4 sm:px-6 sm:py-6 transition-colors ${c.pagina}`}
     >
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none hidden sm:block">
         <div className={`absolute top-0 right-0 w-[400px] h-[400px] blur-[100px] rounded-full ${c.headerBlur}`} />
       </div>
 
@@ -72,7 +72,7 @@ export function PlanejadorFerias() {
               type="button"
               onClick={alternarTema}
               aria-label={isLight ? 'Ativar tema escuro' : 'Ativar tema claro'}
-            className={`p-2 rounded-xl transition-colors ${
+              className={`min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center p-2 rounded-xl transition-colors ${
               isLight
                 ? 'bg-slate-200 text-amber-600 hover:bg-slate-300'
                 : 'bg-slate-800/80 text-amber-400 hover:bg-slate-700/80'
@@ -173,15 +173,15 @@ export function PlanejadorFerias() {
               <div className={`flex flex-wrap gap-3 px-3 py-2 border rounded-lg ${c.legenda}`}>
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                  <span className="text-[9px] font-medium text-slate-500 uppercase tracking-wider">Agendar</span>
+                  <span className="text-xs sm:text-[9px] font-medium text-slate-500 uppercase tracking-wider">Agendar</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full border border-emerald-500/50 bg-emerald-500/10" />
-                  <span className="text-[9px] font-medium text-slate-500 uppercase tracking-wider">Emenda</span>
+                  <span className="text-xs sm:text-[9px] font-medium text-slate-500 uppercase tracking-wider">Emenda</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-amber-500" />
-                  <span className="text-[9px] font-medium text-slate-500 uppercase tracking-wider">Feriado</span>
+                  <span className="text-xs sm:text-[9px] font-medium text-slate-500 uppercase tracking-wider">Feriado</span>
                 </div>
               </div>
             )}
