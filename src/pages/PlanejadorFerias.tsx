@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { CalendarioAnual } from '@/components/CalendarioAnual'
 import { CalendarioSkeleton } from '@/components/CalendarioSkeleton'
 import { SidebarPlanejador } from '@/components/SidebarPlanejador'
@@ -6,9 +6,56 @@ import { usePlanejadorFerias } from '@/hooks/usePlanejadorFerias'
 import { useTema } from '@/contexts/ThemeContext'
 import { classesTema } from '@/utils/classesTema'
 
+const LIMIAR_FECHAR_ARRASTO_PX = 120
+
 export function PlanejadorFerias() {
   const [sidebarAberta, setSidebarAberta] = useState(false)
+  const [arrastoY, setArrastoY] = useState(0)
+  const [sheetVisivel, setSheetVisivel] = useState(false)
+  const [arrastando, setArrastando] = useState(false)
+  const touchInicio = useRef<{ y: number; arrastoInicial: number } | null>(null)
   const { tema, alternarTema } = useTema()
+
+  useEffect(() => {
+    if (sidebarAberta) {
+      setArrastoY(0)
+      const id = requestAnimationFrame(() => {
+        requestAnimationFrame(() => setSheetVisivel(true))
+      })
+      return () => cancelAnimationFrame(id)
+    }
+    setSheetVisivel(false)
+  }, [sidebarAberta])
+
+  const fecharSheet = () => {
+    setSheetVisivel(false)
+    const id = setTimeout(() => setSidebarAberta(false), 280)
+    return () => clearTimeout(id)
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchInicio.current = { y: e.touches[0].clientY, arrastoInicial: arrastoY }
+    setArrastando(true)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!touchInicio.current) return
+    const delta = e.touches[0].clientY - touchInicio.current.y
+    const novo = touchInicio.current.arrastoInicial + delta
+    setArrastoY(Math.max(0, novo))
+  }
+
+  const handleTouchEnd = () => {
+    setArrastando(false)
+    if (!touchInicio.current) return
+    if (arrastoY >= LIMIAR_FECHAR_ARRASTO_PX) {
+      setSheetVisivel(false)
+      setTimeout(() => setSidebarAberta(false), 280)
+    } else {
+      setArrastoY(0)
+    }
+    touchInicio.current = null
+  }
   const {
     ano,
     setAno,
@@ -111,7 +158,7 @@ export function PlanejadorFerias() {
             />
           </div>
 
-          {/* Drawer mobile: configuração e lista de oportunidades */}
+          {/* Bottom sheet mobile: sobe de baixo, arrastar para fechar */}
           {sidebarAberta && (
             <div
               className="fixed inset-0 z-50 lg:hidden"
@@ -121,17 +168,39 @@ export function PlanejadorFerias() {
             >
               <div
                 className="absolute inset-0 bg-black/50 transition-opacity"
-                onClick={() => setSidebarAberta(false)}
+                onClick={fecharSheet}
                 aria-hidden
               />
               <div
-                className={`absolute top-0 right-0 bottom-0 w-full max-w-sm flex flex-col shadow-xl transition-transform ${c.pagina}`}
+                className={`fixed left-0 right-0 bottom-0 max-h-[90vh] flex flex-col rounded-t-2xl shadow-2xl ${c.pagina} ${!arrastando ? 'transition-transform duration-300 ease-out' : ''}`}
+                style={{
+                  transform: sheetVisivel ? `translateY(${arrastoY}px)` : 'translateY(100%)',
+                }}
               >
-                <div className={`flex items-center justify-between gap-3 p-4 border-b shrink-0 ${c.cardBorda}`}>
+                {/* Alça para arrastar com o dedo */}
+                <div
+                  className="flex shrink-0 flex-col items-center pt-3 pb-2 touch-none cursor-grab active:cursor-grabbing"
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  onTouchCancel={handleTouchEnd}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Arrastar para fechar"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') fecharSheet()
+                  }}
+                >
+                  <div
+                    className={`w-12 h-1 rounded-full shrink-0 ${isLight ? 'bg-slate-300' : 'bg-slate-600'}`}
+                    aria-hidden
+                  />
+                </div>
+                <div className={`flex items-center justify-between gap-3 px-4 pb-3 border-b shrink-0 ${c.cardBorda}`}>
                   <h2 className={`font-display text-lg font-semibold ${c.paginaTitulo}`}>Configuração</h2>
                   <button
                     type="button"
-                    onClick={() => setSidebarAberta(false)}
+                    onClick={fecharSheet}
                     aria-label="Fechar configuração"
                     className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl font-medium transition-colors ${
                       isLight ? 'bg-slate-200 hover:bg-slate-300' : 'bg-slate-800/80 hover:bg-slate-700/80'
@@ -140,8 +209,8 @@ export function PlanejadorFerias() {
                     Fechar
                   </button>
                 </div>
-                <div className="flex-1 min-h-0 overflow-y-auto">
-                  <div className="p-4">
+                <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
+                  <div className="p-4 pb-8">
                     <SidebarPlanejador
                       ano={ano}
                       setAno={setAno}
@@ -154,7 +223,7 @@ export function PlanejadorFerias() {
                       oportunidadeSelecionada={oportunidadeSelecionada}
                       setOportunidadeSelecionada={(v) => {
                         setOportunidadeSelecionada(v)
-                        setSidebarAberta(false)
+                        fecharSheet()
                       }}
                       oportunidadeEmHover={oportunidadeEmHover}
                       setOportunidadeEmHover={setOportunidadeEmHover}
@@ -216,6 +285,26 @@ export function PlanejadorFerias() {
               )}
             </div>
           </section>
+
+          <footer className={`mt-8 pt-6 border-t flex flex-wrap items-center justify-center gap-2 sm:gap-3 ${c.cardBorda}`}>
+            <span className={`text-sm ${c.textoMuted}`}>Feito por Nicolas Penatti</span>
+            <a
+              href="https://www.linkedin.com/in/nicolaspenatti"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn de Nicolas Penatti"
+              className={`inline-flex items-center gap-1.5 min-h-[44px] sm:min-h-0 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                isLight
+                  ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/80'
+              }`}
+            >
+              <svg className="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              </svg>
+              LinkedIn
+            </a>
+          </footer>
         </div>
       </div>
     </div>
